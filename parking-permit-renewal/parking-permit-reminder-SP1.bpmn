@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0egiwmp" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.18.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.20.0">
+  <bpmn:process id="Process_Reminder" isExecutable="true" camunda:historyTimeToLive="180" camunda:isStartableInTasklist="false">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_1r29eao</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:scriptTask id="Activity_1bvzzw0" name="Read url from properties" scriptFormat="JavaScript">
+      <bpmn:incoming>Flow_1r29eao</bpmn:incoming>
+      <bpmn:outgoing>Flow_1d1uu19</bpmn:outgoing>
+      <bpmn:script>var Thread = Java.type("java.lang.Thread");
+var ClassLoader = Thread.currentThread().getContextClassLoader();
+var InputStreamReader = Java.type("java.io.InputStreamReader");
+var BufferedReader = Java.type("java.io.BufferedReader");
+var StandardCharsets = Java.type("java.nio.charset.StandardCharsets");
+
+var resourceName = "application.properties"; // The name of your file
+
+try {
+  var inputStream = ClassLoader.getResourceAsStream(resourceName);
+  if (inputStream) {
+    var reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+    var config = {};
+    var line;
+    while ((line = reader.readLine()) !== null) {
+      if (line.trim() !== "" &amp;&amp; !line.startsWith("#")) {
+        var parts = line.split("=");
+        if (parts.length === 2) {
+          var key = parts[0].trim();
+          var value = parts[1].trim();
+          config[key] = value;
+        }
+      }
+    }
+    reader.close();
+    execution.setVariable("url", config["url"]);
+    execution.setVariable("fileAccessSuccess", true);
+  } else {
+    execution.setVariable("fileAccessSuccess", false);
+    execution.setVariable("fileAccessError", "Resource not found on classpath: " + resourceName);
+  }
+} catch (e) {
+  execution.setVariable("fileAccessSuccess", false);
+  execution.setVariable("fileAccessError", "Error reading resource: " + e.message);
+}</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="Flow_1r29eao" sourceRef="StartEvent_1" targetRef="Activity_1bvzzw0" />
+    <bpmn:endEvent id="Event_0777125">
+      <bpmn:incoming>Flow_0sabrlk</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1d1uu19" sourceRef="Activity_1bvzzw0" targetRef="Activity_113ddxb" />
+    <bpmn:sequenceFlow id="Flow_0sabrlk" sourceRef="Activity_113ddxb" targetRef="Event_0777125" />
+    <bpmn:scriptTask id="Activity_113ddxb" name="Send E-Mail" scriptFormat="JavaScript">
+      <bpmn:incoming>Flow_1d1uu19</bpmn:incoming>
+      <bpmn:outgoing>Flow_0sabrlk</bpmn:outgoing>
+      <bpmn:script>var URL = Java.type("java.net.URL");
+var HttpURLConnection = Java.type("java.net.HttpURLConnection");
+
+var requestUrl = execution.getVariable("url");
+
+try {
+  var url = new URL(requestUrl);
+  var connection = url.openConnection();
+  connection.setRequestMethod("GET"); // Or "POST", "PUT", "DELETE", etc.
+  connection.connect(); // Establish the connection
+  execution.setVariable("httpResponseCode", connection.getResponseCode());
+  connection.disconnect();
+} catch (e) {
+  execution.setVariable("httpRequestError", "HTTP Request Failed: " + e.message);
+}</bpmn:script>
+    </bpmn:scriptTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_Reminder">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ddvx2z_di" bpmnElement="Activity_1bvzzw0">
+        <dc:Bounds x="290" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0777125_di" bpmnElement="Event_0777125">
+        <dc:Bounds x="602" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_05ci3j0_di" bpmnElement="Activity_113ddxb">
+        <dc:Bounds x="450" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1r29eao_di" bpmnElement="Flow_1r29eao">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="290" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1d1uu19_di" bpmnElement="Flow_1d1uu19">
+        <di:waypoint x="390" y="117" />
+        <di:waypoint x="450" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0sabrlk_di" bpmnElement="Flow_0sabrlk">
+        <di:waypoint x="550" y="117" />
+        <di:waypoint x="602" y="117" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

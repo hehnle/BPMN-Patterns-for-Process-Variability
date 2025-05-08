@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1n5pndb" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.18.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.20.0">
+  <bpmn:process id="Process_RenewalParkingPermitCorrelation" name="Renewal Parking Permit Correlation" isExecutable="true" camunda:historyTimeToLive="180" camunda:isStartableInTasklist="false">
+    <bpmn:sequenceFlow id="Flow_13ma6dk" sourceRef="StartEvent_1" targetRef="Event_15bq4z7" />
+    <bpmn:sequenceFlow id="Flow_0y9h5wf" sourceRef="Event_15bq4z7" targetRef="Event_0w61bp7" />
+    <bpmn:startEvent id="StartEvent_1" name="variation point call">
+      <bpmn:outgoing>Flow_13ma6dk</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1cwk7gp" messageRef="Message_2htuo5q" />
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_0w61bp7" name="variation point finished">
+      <bpmn:incoming>Flow_0y9h5wf</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_05vexn1" camunda:expression="${execution.getProcessEngine().getRuntimeService().createMessageCorrelation(&#34;VariationPointFinished&#34;).processInstanceId(execution.getVariable(&#34;pid&#34;)).correlate()}" />
+    </bpmn:endEvent>
+    <bpmn:intermediateCatchEvent id="Event_15bq4z7" name="parking permit expired">
+      <bpmn:incoming>Flow_13ma6dk</bpmn:incoming>
+      <bpmn:outgoing>Flow_0y9h5wf</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1ru2549">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT15S</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+  </bpmn:process>
+  <bpmn:message id="Message_2htuo5q" name="VariationPointCall" />
+  <bpmn:message id="Message_1rhsa50" name="ParkingPermitRewalConfirmed" />
+  <bpmn:message id="Message_1b210un" name="VariationPointFinished" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_RenewalParkingPermitCorrelation">
+      <bpmndi:BPMNShape id="Event_12zrihp_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="79" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="154" y="122" width="88" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1783r4s_di" bpmnElement="Event_0w61bp7">
+        <dc:Bounds x="492" y="79" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="476" y="122" width="69" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0uh3q8d_di" bpmnElement="Event_15bq4z7">
+        <dc:Bounds x="332" y="79" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="315" y="122" width="71" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_13ma6dk_di" bpmnElement="Flow_13ma6dk">
+        <di:waypoint x="215" y="97" />
+        <di:waypoint x="332" y="97" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0y9h5wf_di" bpmnElement="Flow_0y9h5wf">
+        <di:waypoint x="368" y="97" />
+        <di:waypoint x="492" y="97" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
