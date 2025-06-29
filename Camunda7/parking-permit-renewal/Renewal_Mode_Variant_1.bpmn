@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1n5pndb" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.18.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.20.0">
+  <bpmn:process id="Process_RenewalParking_RenewalMode" name="Renewal Parking Permit Correlation" isExecutable="true" camunda:historyTimeToLive="180" camunda:isStartableInTasklist="false">
+    <bpmn:sequenceFlow id="Flow_13ma6dk" sourceRef="StartEvent_1" targetRef="Gateway_1knaih6" />
+    <bpmn:intermediateCatchEvent id="Event_15bq4z7" name="parking permit renewal confirmed">
+      <bpmn:incoming>Flow_1tyq3t8</bpmn:incoming>
+      <bpmn:outgoing>Flow_0y9h5wf</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0a15ley" messageRef="Message_1rhsa50" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_0y9h5wf" sourceRef="Event_15bq4z7" targetRef="Event_0w61bp7" />
+    <bpmn:startEvent id="StartEvent_1" name="Renewal started">
+      <bpmn:outgoing>Flow_13ma6dk</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1cwk7gp" messageRef="Message_2htuo5q" />
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_0w61bp7" name="Parking permit renewed">
+      <bpmn:incoming>Flow_0y9h5wf</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_05vexn1" camunda:expression="${execution.getProcessEngine().getRuntimeService().createMessageCorrelation(&#34;ParkingPermitRenewed&#34;).processInstanceId(execution.getVariable(&#34;pid&#34;)).correlate()}" />
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1tyq3t8" sourceRef="Gateway_1knaih6" targetRef="Event_15bq4z7" />
+    <bpmn:eventBasedGateway id="Gateway_1knaih6">
+      <bpmn:incoming>Flow_13ma6dk</bpmn:incoming>
+      <bpmn:outgoing>Flow_1tyq3t8</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0dmiego</bpmn:outgoing>
+    </bpmn:eventBasedGateway>
+    <bpmn:sequenceFlow id="Flow_0dmiego" sourceRef="Gateway_1knaih6" targetRef="Event_01mbtcx" />
+    <bpmn:sequenceFlow id="Flow_15ab6n5" sourceRef="Event_01mbtcx" targetRef="Event_0gcmyzg" />
+    <bpmn:intermediateCatchEvent id="Event_01mbtcx" name="Waiting time exceeded">
+      <bpmn:incoming>Flow_0dmiego</bpmn:incoming>
+      <bpmn:outgoing>Flow_15ab6n5</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0r43tad">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT10S</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="Event_0gcmyzg" name="parking permit renewal declined">
+      <bpmn:incoming>Flow_15ab6n5</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_10yfi8v" camunda:expression="${execution.getProcessEngine().getRuntimeService().createMessageCorrelation(&#34;ParkingPermitRenewalDeclined&#34;).processInstanceId(execution.getVariable(&#34;pid&#34;)).correlate()}" />
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmn:message id="Message_2htuo5q" name="RenewalStarted" />
+  <bpmn:message id="Message_1rhsa50" name="ParkingPermitRewalConfirmed" />
+  <bpmn:message id="Message_1b210un" name="VariationPointFinished" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_RenewalParking_RenewalMode">
+      <bpmndi:BPMNShape id="Event_03sbjfq_di" bpmnElement="Event_15bq4z7">
+        <dc:Bounds x="352" y="62" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="326" y="105" width="90" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_12zrihp_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="172" y="132" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="151" y="175" width="80" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1783r4s_di" bpmnElement="Event_0w61bp7">
+        <dc:Bounds x="482" y="62" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="465" y="105" width="72" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1cfp1a9_di" bpmnElement="Gateway_1knaih6">
+        <dc:Bounds x="255" y="125" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0zzvng4_di" bpmnElement="Event_01mbtcx">
+        <dc:Bounds x="352" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="340" y="235" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_00eqqyb_di" bpmnElement="Event_0gcmyzg">
+        <dc:Bounds x="482" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="459" y="235" width="83" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_13ma6dk_di" bpmnElement="Flow_13ma6dk">
+        <di:waypoint x="208" y="150" />
+        <di:waypoint x="255" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0y9h5wf_di" bpmnElement="Flow_0y9h5wf">
+        <di:waypoint x="388" y="80" />
+        <di:waypoint x="482" y="80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tyq3t8_di" bpmnElement="Flow_1tyq3t8">
+        <di:waypoint x="280" y="125" />
+        <di:waypoint x="280" y="80" />
+        <di:waypoint x="352" y="80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0dmiego_di" bpmnElement="Flow_0dmiego">
+        <di:waypoint x="280" y="175" />
+        <di:waypoint x="280" y="210" />
+        <di:waypoint x="352" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15ab6n5_di" bpmnElement="Flow_15ab6n5">
+        <di:waypoint x="388" y="210" />
+        <di:waypoint x="482" y="210" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

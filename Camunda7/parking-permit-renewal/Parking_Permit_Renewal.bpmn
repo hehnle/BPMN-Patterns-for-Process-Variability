@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1oew633" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.18.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.20.0">
+  <bpmn:process id="Process_RenewalParkingPermit" name="Renewal Parking Permit" isExecutable="true" camunda:historyTimeToLive="180">
+    <bpmn:startEvent id="StartEvent_1" name="Parking permit acquired">
+      <bpmn:outgoing>Flow_0whxrlz</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0whxrlz" sourceRef="StartEvent_1" targetRef="Gateway_14iadr4" />
+    <bpmn:task id="Activity_1mipfqq" name="Collect Money">
+      <bpmn:incoming>Flow_0tpgeek</bpmn:incoming>
+      <bpmn:outgoing>Flow_1hmmmv1</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_1hmmmv1" sourceRef="Activity_1mipfqq" targetRef="Activity_1s2k06k" />
+    <bpmn:userTask id="Activity_1s2k06k" name="Issue Parking Permit">
+      <bpmn:incoming>Flow_1hmmmv1</bpmn:incoming>
+      <bpmn:outgoing>Flow_0pd2kld</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0tpgeek" sourceRef="Event_1jjvcyd" targetRef="Activity_1mipfqq" />
+    <bpmn:intermediateCatchEvent id="Event_1jjvcyd" name="Parking permit renewed">
+      <bpmn:incoming>Flow_0frd1x0</bpmn:incoming>
+      <bpmn:outgoing>Flow_0tpgeek</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1omuzpi" messageRef="Message_3e0dvic" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_1sns1by" sourceRef="Activity_1bvzzw0" targetRef="Event_0kwhzm1" />
+    <bpmn:intermediateCatchEvent id="Event_1e0rkue" name="Before expiration">
+      <bpmn:incoming>Flow_0oy95ep</bpmn:incoming>
+      <bpmn:outgoing>Flow_1g5p6zr</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0mp8gqb">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT0S</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_1g5p6zr" sourceRef="Event_1e0rkue" targetRef="Activity_1bvzzw0" />
+    <bpmn:callActivity id="Activity_1bvzzw0" name="Remind of renewal" calledElement="Process_RenewalParking_Reminder">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1g5p6zr</bpmn:incoming>
+      <bpmn:outgoing>Flow_1sns1by</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:exclusiveGateway id="Gateway_14iadr4">
+      <bpmn:incoming>Flow_0whxrlz</bpmn:incoming>
+      <bpmn:incoming>Flow_0pd2kld</bpmn:incoming>
+      <bpmn:outgoing>Flow_0oy95ep</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0oy95ep" sourceRef="Gateway_14iadr4" targetRef="Event_1e0rkue" />
+    <bpmn:sequenceFlow id="Flow_0pd2kld" sourceRef="Activity_1s2k06k" targetRef="Gateway_14iadr4" />
+    <bpmn:endEvent id="Event_1kzn9zy" name="Parking permit cancelled">
+      <bpmn:incoming>Flow_09q95ed</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_09q95ed" sourceRef="Event_0aohqsb" targetRef="Event_1kzn9zy" />
+    <bpmn:eventBasedGateway id="Gateway_1v0zry7">
+      <bpmn:incoming>Flow_0xcif05</bpmn:incoming>
+      <bpmn:outgoing>Flow_1mfuvt1</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0frd1x0</bpmn:outgoing>
+    </bpmn:eventBasedGateway>
+    <bpmn:intermediateCatchEvent id="Event_0aohqsb" name="Parking permit renewal declined">
+      <bpmn:incoming>Flow_1mfuvt1</bpmn:incoming>
+      <bpmn:outgoing>Flow_09q95ed</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1mis62g" messageRef="Message_00dhf38" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_1mfuvt1" sourceRef="Gateway_1v0zry7" targetRef="Event_0aohqsb" />
+    <bpmn:sequenceFlow id="Flow_0frd1x0" sourceRef="Gateway_1v0zry7" targetRef="Event_1jjvcyd" />
+    <bpmn:sequenceFlow id="Flow_0xcif05" sourceRef="Event_0kwhzm1" targetRef="Gateway_1v0zry7" />
+    <bpmn:intermediateThrowEvent id="Event_0kwhzm1" name="Renewal started">
+      <bpmn:incoming>Flow_1sns1by</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xcif05</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1wgc2v5" messageRef="Message_3e0dvic" camunda:expression="${execution.getProcessEngine().getRuntimeService().createMessageCorrelation(&#34;RenewalStarted&#34;).setVariable(&#34;pid&#34;, execution.getId()).correlate()}" />
+    </bpmn:intermediateThrowEvent>
+  </bpmn:process>
+  <bpmn:message id="Message_3e0dvic" name="ParkingPermitRenewed" />
+  <bpmn:message id="Message_00dhf38" name="ParkingPermitRenewalDeclined" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_RenewalParkingPermit">
+      <bpmndi:BPMNShape id="Event_12i4sd5_di" bpmnElement="Event_1e0rkue">
+        <dc:Bounds x="342" y="149" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="318" y="192" width="84" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0s4e93u_di" bpmnElement="Activity_1bvzzw0">
+        <dc:Bounds x="430" y="127" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="172" y="149" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="155" y="192" width="72" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_14iadr4_di" bpmnElement="Gateway_14iadr4" isMarkerVisible="true">
+        <dc:Bounds x="235" y="142" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1mipfqq_di" bpmnElement="Activity_1mipfqq">
+        <dc:Bounds x="960" y="127" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_02wkb9b_di" bpmnElement="Activity_1s2k06k">
+        <dc:Bounds x="1130" y="127" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0yk8exp_di" bpmnElement="Event_1jjvcyd">
+        <dc:Bounds x="822" y="149" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="805" y="192" width="72" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1kzn9zy_di" bpmnElement="Event_1kzn9zy">
+        <dc:Bounds x="1162" y="232" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1145" y="275" width="72" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1vfcagg_di" bpmnElement="Event_0aohqsb">
+        <dc:Bounds x="822" y="232" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="799" y="275" width="83" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_14hch0a_di" bpmnElement="Gateway_1v0zry7">
+        <dc:Bounds x="695" y="142" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ipsc4e_di" bpmnElement="Event_0kwhzm1">
+        <dc:Bounds x="592" y="149" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="570" y="192" width="80" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0oy95ep_di" bpmnElement="Flow_0oy95ep">
+        <di:waypoint x="285" y="167" />
+        <di:waypoint x="342" y="167" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1g5p6zr_di" bpmnElement="Flow_1g5p6zr">
+        <di:waypoint x="378" y="167" />
+        <di:waypoint x="430" y="167" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1sns1by_di" bpmnElement="Flow_1sns1by">
+        <di:waypoint x="530" y="167" />
+        <di:waypoint x="592" y="167" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0whxrlz_di" bpmnElement="Flow_0whxrlz">
+        <di:waypoint x="208" y="167" />
+        <di:waypoint x="235" y="167" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0pd2kld_di" bpmnElement="Flow_0pd2kld">
+        <di:waypoint x="1180" y="127" />
+        <di:waypoint x="1180" y="80" />
+        <di:waypoint x="260" y="80" />
+        <di:waypoint x="260" y="142" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0tpgeek_di" bpmnElement="Flow_0tpgeek">
+        <di:waypoint x="858" y="167" />
+        <di:waypoint x="960" y="167" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hmmmv1_di" bpmnElement="Flow_1hmmmv1">
+        <di:waypoint x="1060" y="167" />
+        <di:waypoint x="1130" y="167" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0frd1x0_di" bpmnElement="Flow_0frd1x0">
+        <di:waypoint x="745" y="167" />
+        <di:waypoint x="822" y="167" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09q95ed_di" bpmnElement="Flow_09q95ed">
+        <di:waypoint x="858" y="250" />
+        <di:waypoint x="1162" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1mfuvt1_di" bpmnElement="Flow_1mfuvt1">
+        <di:waypoint x="720" y="192" />
+        <di:waypoint x="720" y="250" />
+        <di:waypoint x="822" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xcif05_di" bpmnElement="Flow_0xcif05">
+        <di:waypoint x="628" y="167" />
+        <di:waypoint x="695" y="167" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
