@@ -1,0 +1,54 @@
+{
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.7.0",
+  "exporter": {
+    "name": "Camunda Web Modeler",
+    "version": "b7cb967"
+  },
+  "schemaVersion": 18,
+  "id": "Travel_Request_Special_Check_Form",
+  "components": [
+    {
+      "text": "Application for Travel Request",
+      "type": "text",
+      "layout": {
+        "row": "Row_1aavpdw",
+        "columns": null
+      },
+      "id": "Field_02uo338"
+    },
+    {
+      "label": "Paid by Third-Party?",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_0frkp71",
+        "columns": null
+      },
+      "id": "Field_0y3zlcd",
+      "key": "paidByThirdParty",
+      "readonly": true
+    },
+    {
+      "label": "Number of Overnight Stays",
+      "type": "number",
+      "layout": {
+        "row": "Row_1hr1apu",
+        "columns": null
+      },
+      "id": "Field_16twx0r",
+      "key": "numberOvernightStays",
+      "readonly": "on"
+    },
+    {
+      "label": "Approve Travel Request?",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_1mjfwef",
+        "columns": null
+      },
+      "id": "Field_1qb3bcq",
+      "key": "approvedSpecialCheck"
+    }
+  ],
+  "type": "default"
+}

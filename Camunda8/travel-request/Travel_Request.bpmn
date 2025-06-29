@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:conversion="http://camunda.org/schema/conversion/1.0" id="Definitions_1hd2jnj" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="b7cb967" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.7.0" conversion:converterVersion="0.12.4">
+  <bpmn:process id="Process_travel_request" name="Travel Request" processType="None" isClosed="false" isExecutable="true">
+    <bpmn:extensionElements>
+      <conversion:message severity="INFO">Unused attribute 'historyTimeToLive' on 'process' is removed.</conversion:message>
+    </bpmn:extensionElements>
+    <bpmn:startEvent id="StartEvent_1" name="upcoming travel">
+      <bpmn:extensionElements>
+        <conversion:message severity="TASK">Element 'formData' cannot be transformed. Please define a form key instead.</conversion:message>
+        <zeebe:formDefinition formId="Travel_Request_Applicaton_Form" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_00955vm</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_00955vm" sourceRef="StartEvent_1" targetRef="Activity_1t8bf2z" />
+    <bpmn:sequenceFlow id="Flow_1kj7b94" sourceRef="Activity_1t8bf2z" targetRef="Gateway_19ty6kj" />
+    <bpmn:sequenceFlow id="Flow_010w8bb" name="regular check" sourceRef="Gateway_19ty6kj" targetRef="Activity_08zy3iz">
+      <bpmn:extensionElements>
+        <conversion:message link="https://docs.camunda.io/docs/components/modeler/bpmn/exclusive-gateways/#conditions" severity="REVIEW">Condition expression: Please review transformed expression: '${regularCheck}' -&gt; '=regularCheck'.</conversion:message>
+      </bpmn:extensionElements>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=regularCheck</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0k8ai68" name="special check" sourceRef="Gateway_19ty6kj" targetRef="Activity_042qe17">
+      <bpmn:extensionElements>
+        <conversion:message link="https://docs.camunda.io/docs/components/modeler/bpmn/exclusive-gateways/#conditions" severity="REVIEW">Condition expression: Please review transformed expression: '${specialCheck}' -&gt; '=specialCheck'.</conversion:message>
+      </bpmn:extensionElements>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=specialCheck</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0cj0tjo" sourceRef="Activity_08zy3iz" targetRef="Gateway_1j9ln7c" />
+    <bpmn:endEvent id="Event_1ck4gfe" name="travel request decided">
+      <bpmn:incoming>Flow_0n4apho</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0n4apho" sourceRef="Activity_0g0rf1f" targetRef="Event_1ck4gfe" />
+    <bpmn:userTask id="Activity_0g0rf1f" name="See decision" implementation="##unspecified">
+      <bpmn:extensionElements>
+        <conversion:message severity="TASK">Element 'formData' cannot be transformed. Please define a form key instead.</conversion:message>
+        <zeebe:userTask />
+        <zeebe:formDefinition formId="Travel-Request-Notification-Form" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_175kkof</bpmn:incoming>
+      <bpmn:outgoing>Flow_0n4apho</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0xibr3t" sourceRef="Activity_042qe17" targetRef="Gateway_1j9ln7c" />
+    <bpmn:inclusiveGateway id="Gateway_19ty6kj">
+      <bpmn:incoming>Flow_1kj7b94</bpmn:incoming>
+      <bpmn:outgoing>Flow_010w8bb</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0k8ai68</bpmn:outgoing>
+    </bpmn:inclusiveGateway>
+    <bpmn:inclusiveGateway id="Gateway_1j9ln7c">
+      <bpmn:incoming>Flow_0cj0tjo</bpmn:incoming>
+      <bpmn:incoming>Flow_0xibr3t</bpmn:incoming>
+      <bpmn:outgoing>Flow_175kkof</bpmn:outgoing>
+    </bpmn:inclusiveGateway>
+    <bpmn:callActivity id="Activity_1t8bf2z" name="Determine check type" calledElement="Process_CheckType">
+      <bpmn:extensionElements>
+        <conversion:message severity="INFO">Element 'camunda:in' with attribute 'variables="all"' is mapped to 'propagateAllParentVariables="true"'.</conversion:message>
+        <conversion:message severity="INFO">Element 'camunda:out' with attribute 'variables="all"' is mapped to 'propagateAllChildVariables="true"'.</conversion:message>
+        <zeebe:calledElement processId="Process_CheckType" propagateAllChildVariables="true" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_00955vm</bpmn:incoming>
+      <bpmn:outgoing>Flow_1kj7b94</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:userTask id="Activity_08zy3iz" name="Regular check" implementation="##unspecified">
+      <bpmn:extensionElements>
+        <conversion:message severity="TASK">Element 'formData' cannot be transformed. Please define a form key instead.</conversion:message>
+        <zeebe:userTask />
+        <zeebe:formDefinition formId="Travel_Request_Regular_Check_Form" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_010w8bb</bpmn:incoming>
+      <bpmn:outgoing>Flow_0cj0tjo</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_042qe17" name="Special check" implementation="##unspecified">
+      <bpmn:extensionElements>
+        <conversion:message severity="TASK">Element 'formData' cannot be transformed. Please define a form key instead.</conversion:message>
+        <zeebe:userTask />
+        <zeebe:formDefinition formId="Travel_Request_Special_Check_Form" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0k8ai68</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xibr3t</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_175kkof" sourceRef="Gateway_1j9ln7c" targetRef="Activity_0g0rf1f" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_travel_request">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="239" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="158" y="282" width="79" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ck4gfe_di" bpmnElement="Event_1ck4gfe">
+        <dc:Bounds x="962" y="239" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="947" y="282" width="67" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0jcj4yn_di" bpmnElement="Activity_0g0rf1f">
+        <dc:Bounds x="800" y="217" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0z5y7ey_di" bpmnElement="Gateway_19ty6kj">
+        <dc:Bounds x="425" y="232" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0fmqjra_di" bpmnElement="Gateway_1j9ln7c">
+        <dc:Bounds x="695" y="232" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1y509gj_di" bpmnElement="Activity_1t8bf2z">
+        <dc:Bounds x="270" y="217" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1rvaaot_di" bpmnElement="Activity_08zy3iz">
+        <dc:Bounds x="530" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0prqnyw_di" bpmnElement="Activity_042qe17">
+        <dc:Bounds x="530" y="310" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_00955vm_di" bpmnElement="Flow_00955vm">
+        <di:waypoint x="215" y="257" />
+        <di:waypoint x="270" y="257" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1kj7b94_di" bpmnElement="Flow_1kj7b94">
+        <di:waypoint x="370" y="257" />
+        <di:waypoint x="425" y="257" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_010w8bb_di" bpmnElement="Flow_010w8bb">
+        <di:waypoint x="450" y="232" />
+        <di:waypoint x="450" y="120" />
+        <di:waypoint x="530" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="466" y="183" width="67" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0k8ai68_di" bpmnElement="Flow_0k8ai68">
+        <di:waypoint x="450" y="282" />
+        <di:waypoint x="450" y="350" />
+        <di:waypoint x="530" y="350" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="456" y="289" width="67" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0cj0tjo_di" bpmnElement="Flow_0cj0tjo">
+        <di:waypoint x="630" y="120" />
+        <di:waypoint x="720" y="120" />
+        <di:waypoint x="720" y="232" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0n4apho_di" bpmnElement="Flow_0n4apho">
+        <di:waypoint x="900" y="257" />
+        <di:waypoint x="962" y="257" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xibr3t_di" bpmnElement="Flow_0xibr3t">
+        <di:waypoint x="630" y="350" />
+        <di:waypoint x="720" y="350" />
+        <di:waypoint x="720" y="282" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_175kkof_di" bpmnElement="Flow_175kkof">
+        <di:waypoint x="745" y="257" />
+        <di:waypoint x="800" y="257" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

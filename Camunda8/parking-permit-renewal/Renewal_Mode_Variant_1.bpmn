@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1n5pndb" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="e97ac9f" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.7.0">
+  <bpmn:process id="Process_RenewalParking_RenewalMode" name="Renewal Parking Permit Correlation" isExecutable="true" camunda:historyTimeToLive="180" camunda:isStartableInTasklist="false">
+    <bpmn:sequenceFlow id="Flow_13ma6dk" sourceRef="StartEvent_1" targetRef="Gateway_0f9ly4o" />
+    <bpmn:sequenceFlow id="Flow_0y9h5wf" sourceRef="Event_15bq4z7" targetRef="Activity_1936qf3" />
+    <bpmn:startEvent id="StartEvent_1" name="Renewal started">
+      <bpmn:outgoing>Flow_13ma6dk</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1cwk7gp" messageRef="Message_2htuo5q" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1ytipg2" sourceRef="Activity_1936qf3" targetRef="Event_0w61bp7" />
+    <bpmn:endEvent id="Event_0w61bp7" name="Parking permit Renewed">
+      <bpmn:incoming>Flow_1ytipg2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sendTask id="Activity_1936qf3" name="Renew parking permit" zeebe:modelerTemplate="21c4ba95-2542-4a22-9bda-162eae2edf9a" zeebe:modelerTemplateVersion="1750109579311" zeebe:modelerTemplateIcon="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABsAAAARCAIAAACjLUBkAAAB9UlEQVQ4T2Ps7OplYWHJSE/h4uLatn1na1vnixcvGUgBxsaGrc0Nqqoqjx8/6ejsYbazc5w9Z96q1Wv5+fn9fL1joiOAFly4eOnv379QHbiBhIR4W2tTdWUZGxtr/4TJRcXlt27fYWJkZATKvX37rrKqzssn8OKly/l52Xt2bfXydIdowwrY2dnzcrP27t7m4e66ZOlyR2fP2XPm//nzByjF7OTkcuHCRYi6d+/erV234dq165YW5lFR4TbWVkDHAgUhsnAAtGzWjCmurs5HjhxTVla6eOn6jx8/oHJoJkLAvfsPli5b+eHDRw9Pt8SEWFFRkfPnL/74+RMoBQysGdMmJScnvHz5UkRE+PDRU4JCohBdcMDY3NIxf8EiKA8V8PPz5eZkxsVGf/nydd78hcBQiwgPff/+fV//5JWr1vz79w+qDhXgMxECFBTkK8tLXFycfv/+PWfugukzZn/9+hUqhw0QNhECNDTUgOFATMJigtKEwI0bt4hMp8SaSDxggdIwcPf2VSAJSaT///8HizEoq2oDxYGCSipa9+5cA4pDRIAkUBbOgAAsbgRKI5sFYQABUBBiHJQPsx4NYDER4hw4G8KAAGTjIADTUMJuhDsTwkB2NTIbDrC7EcrCAJhGYIoQmx6JB4yLFi/bvmMnlEc5YGAAAMbF6NQzlAdoAAAAAElFTkSuQmCC">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="c-send-message" />
+        <zeebe:ioMapping>
+          <zeebe:input source="ParkingPermitRenewed" target="messageName" />
+          <zeebe:input source="true" target="correlationVariables_optional" />
+          <zeebe:input source="=businessKey" target="correlationVariables" />
+          <zeebe:input source="false" target="messageVariables_optional" />
+          <zeebe:input source="false" target="messageId_optional" />
+          <zeebe:input source="false" target="messageDuration_optional" />
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="Result Variable" value="result" />
+          <zeebe:header key="ERROR_EXPRESSION_KEYWORD" value="if is defined(error) then bpmnError(error.code, error.message) else null" />
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0y9h5wf</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ytipg2</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:intermediateCatchEvent id="Event_15bq4z7" name="Parking parking renewal confirmed">
+      <bpmn:incoming>Flow_1voqtuy</bpmn:incoming>
+      <bpmn:outgoing>Flow_0y9h5wf</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1e31bss" messageRef="Message_1rhsa50" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_1voqtuy" sourceRef="Gateway_0f9ly4o" targetRef="Event_15bq4z7" />
+    <bpmn:eventBasedGateway id="Gateway_0f9ly4o">
+      <bpmn:incoming>Flow_13ma6dk</bpmn:incoming>
+      <bpmn:outgoing>Flow_1voqtuy</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1vd4nm0</bpmn:outgoing>
+    </bpmn:eventBasedGateway>
+    <bpmn:sendTask id="Activity_1y28n9e" name="Decline parking permit renewal" zeebe:modelerTemplate="21c4ba95-2542-4a22-9bda-162eae2edf9a" zeebe:modelerTemplateVersion="1750109579311" zeebe:modelerTemplateIcon="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABsAAAARCAIAAACjLUBkAAAB9UlEQVQ4T2Ps7OplYWHJSE/h4uLatn1na1vnixcvGUgBxsaGrc0Nqqoqjx8/6ejsYbazc5w9Z96q1Wv5+fn9fL1joiOAFly4eOnv379QHbiBhIR4W2tTdWUZGxtr/4TJRcXlt27fYWJkZATKvX37rrKqzssn8OKly/l52Xt2bfXydIdowwrY2dnzcrP27t7m4e66ZOlyR2fP2XPm//nzByjF7OTkcuHCRYi6d+/erV234dq165YW5lFR4TbWVkDHAgUhsnAAtGzWjCmurs5HjhxTVla6eOn6jx8/oHJoJkLAvfsPli5b+eHDRw9Pt8SEWFFRkfPnL/74+RMoBQysGdMmJScnvHz5UkRE+PDRU4JCohBdcMDY3NIxf8EiKA8V8PPz5eZkxsVGf/nydd78hcBQiwgPff/+fV//5JWr1vz79w+qDhXgMxECFBTkK8tLXFycfv/+PWfugukzZn/9+hUqhw0QNhECNDTUgOFATMJigtKEwI0bt4hMp8SaSDxggdIwcPf2VSAJSaT///8HizEoq2oDxYGCSipa9+5cA4pDRIAkUBbOgAAsbgRKI5sFYQABUBBiHJQPsx4NYDER4hw4G8KAAGTjIADTUMJuhDsTwkB2NTIbDrC7EcrCAJhGYIoQmx6JB4yLFi/bvmMnlEc5YGAAAMbF6NQzlAdoAAAAAElFTkSuQmCC">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="c-send-message" />
+        <zeebe:ioMapping>
+          <zeebe:input source="ParkingPermitRenewalDeclined" target="messageName" />
+          <zeebe:input source="true" target="correlationVariables_optional" />
+          <zeebe:input source="=businessKey" target="correlationVariables" />
+          <zeebe:input source="false" target="messageVariables_optional" />
+          <zeebe:input source="false" target="messageId_optional" />
+          <zeebe:input source="false" target="messageDuration_optional" />
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="Result Variable" value="result" />
+          <zeebe:header key="ERROR_EXPRESSION_KEYWORD" value="if is defined(error) then bpmnError(error.code, error.message) else null" />
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0s52ey8</bpmn:incoming>
+      <bpmn:outgoing>Flow_0uzcq03</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:endEvent id="Event_0oq6o0r" name="Parking permit renewal declined">
+      <bpmn:incoming>Flow_0uzcq03</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0s52ey8" sourceRef="Event_1ajowy0" targetRef="Activity_1y28n9e" />
+    <bpmn:sequenceFlow id="Flow_0uzcq03" sourceRef="Activity_1y28n9e" targetRef="Event_0oq6o0r" />
+    <bpmn:sequenceFlow id="Flow_1vd4nm0" sourceRef="Gateway_0f9ly4o" targetRef="Event_1ajowy0" />
+    <bpmn:intermediateCatchEvent id="Event_1ajowy0" name="Waiting time exceeded">
+      <bpmn:incoming>Flow_1vd4nm0</bpmn:incoming>
+      <bpmn:outgoing>Flow_0s52ey8</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1m5jrdd">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT15S</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+  </bpmn:process>
+  <bpmn:message id="Message_2htuo5q" name="RenewalStarted" />
+  <bpmn:message id="Message_1rhsa50" name="ParkingPermitRenewed">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=businessKey" />
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:message id="Message_1b210un" name="VariationPointFinished" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_RenewalParking_RenewalMode">
+      <bpmndi:BPMNShape id="Event_12zrihp_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="142" y="152" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="122" y="195" width="80" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1oncqh1_di" bpmnElement="Event_0w61bp7">
+        <dc:Bounds x="682" y="79" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="664" y="122" width="74" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0n4imom_di" bpmnElement="Activity_1936qf3">
+        <dc:Bounds x="490" y="57" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0pvxle5_di" bpmnElement="Event_15bq4z7">
+        <dc:Bounds x="362" y="79" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="336" y="122" width="90" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_17ybsfv_di" bpmnElement="Gateway_0f9ly4o">
+        <dc:Bounds x="245" y="145" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1jy4o2r" bpmnElement="Activity_1y28n9e">
+        <dc:Bounds x="490" y="210" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_13noguo" bpmnElement="Event_0oq6o0r">
+        <dc:Bounds x="682" y="232" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="660" y="275" width="83" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0oriklf_di" bpmnElement="Event_1ajowy0">
+        <dc:Bounds x="362" y="232" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="349" y="275" width="64" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_13ma6dk_di" bpmnElement="Flow_13ma6dk">
+        <di:waypoint x="178" y="170" />
+        <di:waypoint x="245" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0y9h5wf_di" bpmnElement="Flow_0y9h5wf">
+        <di:waypoint x="398" y="97" />
+        <di:waypoint x="490" y="97" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ytipg2_di" bpmnElement="Flow_1ytipg2">
+        <di:waypoint x="590" y="97" />
+        <di:waypoint x="682" y="97" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1voqtuy_di" bpmnElement="Flow_1voqtuy">
+        <di:waypoint x="270" y="145" />
+        <di:waypoint x="270" y="97" />
+        <di:waypoint x="362" y="97" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_1rg4ggu" bpmnElement="Flow_0s52ey8">
+        <di:waypoint x="398" y="250" />
+        <di:waypoint x="490" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_1xsqyg0" bpmnElement="Flow_0uzcq03">
+        <di:waypoint x="590" y="250" />
+        <di:waypoint x="682" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1vd4nm0_di" bpmnElement="Flow_1vd4nm0">
+        <di:waypoint x="270" y="195" />
+        <di:waypoint x="270" y="250" />
+        <di:waypoint x="362" y="250" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

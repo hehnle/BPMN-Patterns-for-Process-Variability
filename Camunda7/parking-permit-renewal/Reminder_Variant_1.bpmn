@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0egiwmp" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.18.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.20.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0egiwmp" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.34.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.20.0">
   <bpmn:process id="Process_RenewalParking_Reminder" isExecutable="true" camunda:historyTimeToLive="180" camunda:isStartableInTasklist="false">
-    <bpmn:startEvent id="StartEvent_1">
+    <bpmn:startEvent id="StartEvent_1" name="Reminder started">
       <bpmn:outgoing>Flow_1r29eao</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:scriptTask id="Activity_1bvzzw0" name="Read url from properties" scriptFormat="JavaScript">
@@ -44,7 +44,7 @@ try {
 }</bpmn:script>
     </bpmn:scriptTask>
     <bpmn:sequenceFlow id="Flow_1r29eao" sourceRef="StartEvent_1" targetRef="Activity_1bvzzw0" />
-    <bpmn:endEvent id="Event_0777125">
+    <bpmn:endEvent id="Event_0777125" name="Reminder ended">
       <bpmn:incoming>Flow_0sabrlk</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1d1uu19" sourceRef="Activity_1bvzzw0" targetRef="Activity_113ddxb" />
@@ -73,6 +73,9 @@ try {
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_RenewalParking_Reminder">
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="155" y="142" width="85" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0ddvx2z_di" bpmnElement="Activity_1bvzzw0">
         <dc:Bounds x="290" y="77" width="100" height="80" />
@@ -80,6 +83,9 @@ try {
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0777125_di" bpmnElement="Event_0777125">
         <dc:Bounds x="602" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="579" y="142" width="82" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_05ci3j0_di" bpmnElement="Activity_113ddxb">
         <dc:Bounds x="450" y="77" width="100" height="80" />

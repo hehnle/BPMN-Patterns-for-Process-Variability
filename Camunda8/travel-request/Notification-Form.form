@@ -1,0 +1,46 @@
+{
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.7.0",
+  "exporter": {
+    "name": "Camunda Web Modeler",
+    "version": "d369958"
+  },
+  "schemaVersion": 18,
+  "id": "Travel-Request-Notification-Form",
+  "components": [
+    {
+      "text": "### Travel Approval Notification",
+      "type": "text",
+      "id": "Heading_0",
+      "layout": {
+        "row": "Row_1ooq3e2"
+      }
+    },
+    {
+      "text": "Your travel request has been approved",
+      "type": "text",
+      "condition": "approvedRegularCheck",
+      "id": "Paragraph_1",
+      "conditional": {
+        "hide": "=(is defined(approvedSpecialCheck) and not(approvedSpecialCheck)) or (is defined(approvedRegularCheck) and not(approvedRegularCheck))"
+      },
+      "layout": {
+        "row": "Row_02eixe1"
+      }
+    },
+    {
+      "text": "Your travel request has not been approved",
+      "type": "text",
+      "condition": "approvedSpecialCheck",
+      "id": "Paragraph_2",
+      "conditional": {
+        "hide": "=not((is defined(approvedSpecialCheck) and not(approvedSpecialCheck)) or (is defined(approvedRegularCheck) and not (approvedRegularCheck)))"
+      },
+      "layout": {
+        "row": "Row_165jef4"
+      }
+    }
+  ],
+  "generated": true,
+  "type": "default"
+}
