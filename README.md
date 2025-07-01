@@ -34,14 +34,16 @@ The process models have been implemented for the following workflow management s
 For Camunda 7 and 8 the [Camunda Desktop Modeller](https://camunda.com/download/modeler/) can be used.
 
 Note that while the names might suggest otherwise, Camunda 8 is not the new version of Camunda 7 but a new product.
-This means that the technical implementation of the process models is completely different.
+That is the technical implementation of the process models is different.
 Furthermore, for the process models targeting Camunda 8, the following "Connectors" are used.
 
 * [Email connector](https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/email/) 
 * [Send BPMN Message](https://marketplace.camunda.com/en-US/apps/448966/send-bpmn-message)
 
 The required element templates are contained in the Camunda8 folder. In order to use them in the Camunda desktop modeler, they need to be copied to `\resources\element-templates` in the folder containing the desktop modeler.
-In order to get the e-mail activity to work, the SMTP server needs to be configured.
+Note that for the e-mail activities to work, an SMTP server needs to be configured.
+For Camunda 8, this can be done directly in the interface of the connector within the process model.
+For Camunda 7, an exemplary REST call is implemented representing an e-mail send activity. The respective properties for the rest call can be configured in an application.properties file.
 
 ## License 
 [cc-by-nc-nd]: http://creativecommons.org/licenses/by-nc-nd/4.0/
