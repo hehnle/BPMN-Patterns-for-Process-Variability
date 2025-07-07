@@ -45,6 +45,10 @@ Note that for the e-mail activities to work, an SMTP server needs to be configur
 For Camunda 8, this can be done directly in the interface of the connector within the process model.
 For Camunda 7, an exemplary REST call is implemented representing an e-mail send activity. The respective properties for the rest call can be configured in an application.properties file.
 
+## Evaluation
+We conducted expert interviews to evaluate the approach. The answers can be found in the folder `Expert-Interviews``.
+The expertes were presented statements for each pattern to which they could express their degree of agreement (1: strongly disagree; 2: disagree; 3: neutral; 4: agree; 5: strongly agree).
+
 ## License 
 [cc-by-nc-nd]: http://creativecommons.org/licenses/by-nc-nd/4.0/
 
