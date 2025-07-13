@@ -41,7 +41,8 @@ Furthermore, for the process models targeting Camunda 8, the following "Connecto
 * [Send BPMN Message](https://marketplace.camunda.com/en-US/apps/448966/send-bpmn-message)
 
 The required element templates are contained in the Camunda8 folder. In order to use them in the Camunda desktop modeler, they need to be copied to `\resources\element-templates` in the folder containing the desktop modeler.
-Note that for the e-mail activities to work, an SMTP server needs to be configured.
+Note that although Camunda 8 allows for message end events, element templates/connectors cannot be used as an implementation of an end event. Consequently, in the parking permit renewal process, a message throw event is placed before the end event.
+Furthermore, for the e-mail activities to work, an SMTP server needs to be configured.
 For Camunda 8, this can be done directly in the interface of the connector within the process model.
 For Camunda 7, an exemplary REST call is implemented representing an e-mail send activity. The respective properties for the rest call can be configured in an application.properties file.
 
